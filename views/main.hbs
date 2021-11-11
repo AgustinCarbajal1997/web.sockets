@@ -1,0 +1,56 @@
+<a href="{{link}}" class="link-info">Volver a página de inicio</a>
+<div class="get-products">
+    <div class="show-products">
+        <h1 class="title">Lista de productos</h1>
+        <div class="div-table-products">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">PRODUCTO</th>
+                        <th scope="col">PRECIO</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                    {{#each products}}
+                        <tr>
+                            <th>{{this.id}}</th>
+                            <th>{{this.title}}</th>
+                            <th>$ {{this.price}}</th>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="add-products">
+        <h1 class="title">Agregar productos</h1>
+        <div class="form-container">
+            <form action="/productos" method="post" enctype="multipart/form-data" id="formulario">
+                <label for="title">Título</label>
+                <input type="text" name="title" id="title">
+                <label for="price">Precio</label>
+                <input type="text" name="price" id="price">
+                <input type="submit" value="Enviar">
+            </form>
+        </div>
+    </div>
+</div>
+<div class="chat">
+    <h1>CHAT DE CLIENTES</h1>
+    <div class="chat-form-container">
+        <form id="chat-form">
+            <label for="email">EMAIL</label>
+            <input type="email" name="email">
+            <label for="text">MENSAJE</label>
+            <input type="text" name="text">
+            <input type="submit" value="Enviar">
+        </form>
+    </div>
+    <div class="chat-messages-container">
+
+    </div>
+</div>
+
+
+

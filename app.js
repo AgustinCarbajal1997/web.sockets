@@ -7,6 +7,9 @@ const handlebars = require("express-handlebars");
 const app = express();
 const httpserver = new HttpServer(app);
 const io = new IOServer(httpserver);
+// db connection
+require("./db/db_connection");
+require("./db/db_sqlite_connection");
 
 app.engine(
   "hbs",
@@ -27,6 +30,7 @@ app.use("/images", express.static(__dirname + "/uploads"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+
 // routes
 const indexRouter = require("./routes/index");
 const productsRouter = require("./routes/productos");
@@ -41,10 +45,10 @@ io.on("connection", (socket) => {
   console.log("Usuario conectado");
   socket.emit("mi mensaje", "Este mensaje desde el servidor");
   socket.on("agregar producto", (producToAdd) => {
-    addProductSocket(io,producToAdd)
+    addProductSocket(io, producToAdd);
   });
-  socket.on("enviar mensaje", (dataMessage)=>{
-    chat(io,dataMessage);
-  })
+  socket.on("enviar mensaje", (dataMessage) => {
+    chat(io, dataMessage);
+  });
 });
 server.on("error", (error) => console.log("Error en el servidor", error));

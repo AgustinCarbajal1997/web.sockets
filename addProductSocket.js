@@ -1,37 +1,20 @@
-const fs = require("fs");
-const path = require("path");
+const { options } = require("./options/my_sql_connection");
+const knex = require("knex")(options);
+
 const addProductSocket = (io, producToAdd) => {
-    fs.readFile(path.join(__dirname, "public", "db.json"), (error, data) => {
-        if (error) {
-          console.log(error);
-        } else {
-          let totalProducts = JSON.parse(data);
-          const maxId = Math.max(...JSON.parse(data).map((item) => item.id)) + 1;
-          const newProduct = {
-            id: maxId,
-            title: producToAdd.title,
-            price: producToAdd.price,
-          };
-          totalProducts = [...totalProducts, newProduct];
-          fs.writeFile(
-            path.join(__dirname, "public", "db.json"),
-            JSON.stringify(totalProducts),
-            (error) => {
-              if (error) {
-                console.log(error);
-                return;
-              }
-              fs.readFile(path.join(__dirname, "public", "db.json"),(error,products)=>{
-                if(error){
-                  console.log(error)
-                }else{
-                  io.sockets.emit("producto agregado", JSON.parse(products));
-                }
-              })
-            }
-          );
-        }
-      });
+  const newProduct = {
+    title: producToAdd.title,
+    price: producToAdd.price,
+  };
+  knex("products").insert(newProduct)
+    .then(()=>{
+      console.log("Agregado correctamente");
+      return knex.from("products").select("*")
+    })
+    .then((products) => {
+      io.sockets.emit("producto agregado", products);
+    })
+
 }
 
 module.exports = addProductSocket;

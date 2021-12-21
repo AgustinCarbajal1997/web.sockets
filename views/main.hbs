@@ -23,7 +23,7 @@
             </table>
         </div>
     </div>
-    <div class="add-products">
+    <div class="add-products" style="display: none;">
         <h1 class="title">Agregar productos</h1>
         <div class="form-container">
             <form action="/productos" method="post" enctype="multipart/form-data" id="formulario">
@@ -42,8 +42,22 @@
         <form id="chat-form">
             <label for="email">EMAIL</label>
             <input type="email" name="email">
-            <label for="text">MENSAJE</label>
-            <input type="text" name="text">
+
+            <label for="nombre">NOMBRE</label>
+            <input type="text" name="nombre">
+
+            <label for="apellido">APELLIDO</label>
+            <input type="text" name="apellido">
+
+            <label for="edad">EDAD</label>
+            <input type="text" name="edad">
+
+            <label for="alias">ALIAS</label>
+            <input type="text" name="alias">
+
+            <label for="message">MENSAJE</label>
+            <input type="text" name="message">
+
             <input type="submit" value="Enviar">
         </form>
     </div>

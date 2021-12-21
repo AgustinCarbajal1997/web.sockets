@@ -1,5 +1,6 @@
 const express = require("express");
 const addProductSocket = require("./addProductSocket");
+const test = require("./routes/test");
 const chat = require("./chat");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
@@ -10,6 +11,7 @@ const io = new IOServer(httpserver);
 // db connection
 require("./db/db_connection");
 require("./db/db_sqlite_connection");
+require("./db/mongoconnection");
 
 app.engine(
   "hbs",
@@ -36,6 +38,7 @@ const indexRouter = require("./routes/index");
 const productsRouter = require("./routes/productos");
 
 app.use("/productos", productsRouter);
+app.use("/api/productos-test", test);
 app.use("/", indexRouter);
 
 const server = httpserver.listen(8080, () => {

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/static/styles.css">
     <title>Document</title>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js"></script>
 </head>
 <body>
     {{{body}}}
@@ -48,13 +49,19 @@
         chatForm.addEventListener("submit", e => {
             e.preventDefault();
             const ev = e.target;
-            if(!ev.email.value.length || !ev.text.value.length) return alert("Complete los datos");
+            if(!ev.email.value.length || !ev.message.value.length) return alert("Complete los datos");
             const data = new Date();
-            
             const newMessage = {
-                email:ev.email.value,
+                author:{
+                    id:ev.email.value,
+                    email:ev.email.value,
+                    nombre:ev.nombre.value,
+                    apellido:ev.apellido.value,
+                    edad:ev.edad.value,
+                    alias:ev.alias.value
+                },
                 date:data.toLocaleString(),
-                text:ev.text.value
+                message:ev.message.value
             }
             socket.emit("enviar mensaje", newMessage)
             
@@ -62,17 +69,45 @@
 
         socket.on("nuevo mensaje", chatData => {
             const messagesContainer = document.querySelector(".chat-messages-container");
-            const html = chatData.reduce((ac, item) =>{
+    
+            const authorSchema = new normalizr.schema.Entity("author");
+
+            const chatSchema = new normalizr.schema.Entity("chats",{
+                author: authorSchema
+            })
+
+            const mensajes = new normalizr.schema.Entity("mensajes",{
+                mensajes:[chatSchema]
+            })
+
+
+            const denormalizeData = normalizr.denormalize(chatData.result,mensajes,chatData.entities)
+            
+            
+
+            const html = Object.keys(denormalizeData.mensajes).reduce((ac, item) =>{
                 const htmlStr = `
                     <div>
-                        <h5>${item.email}</h5>
-                        <h5>[${item.date}]</h5>
-                        <h5>${item.text}</h5>
+                        <h5>${denormalizeData.mensajes[item].author.email}</h5>
+                        <h5>${denormalizeData.mensajes[item].message}</h5>
+                        <h5>${denormalizeData.mensajes[item].date}</h5>
                     </div>
                 `;
                 return ac + htmlStr;
             },"")
             messagesContainer.innerHTML = html;
+            
+            {{!-- const html = denormalizeData.reduce((ac, item) =>{
+                const htmlStr = `
+                    <div>
+                        <h5>${item.author.email}</h5>
+                        <h5>[${item.date}]</h5>
+                        <h5>${item.message}</h5>
+                    </div>
+                `;
+                return ac + htmlStr;
+            },"")
+            messagesContainer.innerHTML = html; --}}
         })
 
     </script>

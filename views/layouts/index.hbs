@@ -69,18 +69,15 @@
 
         socket.on("nuevo mensaje", chatData => {
             const messagesContainer = document.querySelector(".chat-messages-container");
+            const compresionPercentage = document.querySelector(".compresion-percentage")
     
             const authorSchema = new normalizr.schema.Entity("author");
-
             const chatSchema = new normalizr.schema.Entity("chats",{
                 author: authorSchema
             })
-
             const mensajes = new normalizr.schema.Entity("mensajes",{
                 mensajes:[chatSchema]
             })
-
-
             const denormalizeData = normalizr.denormalize(chatData.result,mensajes,chatData.entities)
             
             
@@ -96,18 +93,12 @@
                 return ac + htmlStr;
             },"")
             messagesContainer.innerHTML = html;
+
+            const original = JSON.stringify(denormalizeData).length;
+            const compresion = JSON.stringify(chatData).length;
+            compresionPercentage.innerHTML = `<h2>Compresion: ${parseInt((compresion * 100) / original)}%</h2>`
             
-            {{!-- const html = denormalizeData.reduce((ac, item) =>{
-                const htmlStr = `
-                    <div>
-                        <h5>${item.author.email}</h5>
-                        <h5>[${item.date}]</h5>
-                        <h5>${item.message}</h5>
-                    </div>
-                `;
-                return ac + htmlStr;
-            },"")
-            messagesContainer.innerHTML = html; --}}
+           
         })
 
     </script>

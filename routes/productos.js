@@ -21,7 +21,7 @@ router.get("/", (request, response) => {
     .select("*")
     .then((products) => {
       console.log(products);
-      response.render("main", { products, link: "/" });
+      response.render("main", { products, link: "/", name:request.session.name });
     })
     .catch((error) => {
       console.log(error);

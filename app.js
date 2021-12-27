@@ -5,6 +5,9 @@ const chat = require("./chat");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
 const handlebars = require("express-handlebars");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const advacedOption = { useNewUrlParser:true, useUnifiedTopology:true };
 const app = express();
 const httpserver = new HttpServer(app);
 const io = new IOServer(httpserver);
@@ -31,15 +34,48 @@ app.use("/static", express.static(__dirname + "/public"));
 app.use("/images", express.static(__dirname + "/uploads"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(session({
+  store: MongoStore.create({
+    mongoUrl:"mongodb+srv://magustincarbajal97:NXwUMBbedSFQhGID@cluster0.xkitr.mongodb.net/sessions?retryWrites=true&w=majority",
+    mongoOptions:advacedOption
+  }),
+  secret:"secreto",
+  resave: true,
+  saveUninitialized:true
+}))
 
 
 // routes
 const indexRouter = require("./routes/index");
 const productsRouter = require("./routes/productos");
 
-app.use("/productos", productsRouter);
+app.post("/saveSession", (req, res)=>{
+  req.session.name = req.body.name;
+  res.redirect("/productos");
+})
+app.get("/destroySession", (req, res)=>{
+  req.session.destroy(error => {
+    if(error){
+      return res.json({ message: "Ocurrio un error al desloguearse" })
+    }
+    res.redirect("/");
+  })
+})
+
+function auth(req, res, next){
+  if(!req.session.name){
+    console.log("el name es este", req.session.name)
+    return res.redirect("/")
+  }
+  console.log("el name es este", req.session.name)
+  next()
+}
+app.use("/productos", auth, productsRouter);
 app.use("/api/productos-test", test);
 app.use("/", indexRouter);
+
+
+
 
 const server = httpserver.listen(8080, () => {
   console.log("Servidor web iniciado");

@@ -8,9 +8,12 @@
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <h1 class="title">Menú productos</h1>
-    <div class="div-menu">
-        <h2><a href="/productos">Ver todos los produtos</a></h2>
-    </div>
+    
+    <form action="/saveSession" method="post" class="div-menu">
+        <h2 class="title-login">Login del usuario</h2>
+        <label>Ingrese su nombre</label>
+        <input type="text" name="name" id="name">
+        <input type="submit" value="ENVIAR">
+    </form>
 </body>
 </html>

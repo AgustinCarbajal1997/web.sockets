@@ -37,7 +37,9 @@ button{
     padding: 5px;
     cursor: pointer;
 }
-
+.title-login{
+    color: darkblue;
+}
 .form-container{
     display: flex;
     justify-content: center;
@@ -72,6 +74,8 @@ input[type=submit]{
     border-radius: 5px;
     padding: 5px;
     cursor: pointer;
+    display: block;
+    margin: auto;
 }
 
 
